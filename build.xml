@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="jar" name="pos">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="pos.classpath">
+      <pathelement location="."/>
+      <pathelement location="build"/>
+      <pathelement location="lib/mysql-connector-java-5.1.14-bin.jar"/>
+      <pathelement location="lib/log4j-1.2.15.jar"/>
+      <pathelement location="lib/junit-4.8.1.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="build"/>
+        <copy includeemptydirs="false" todir="build">
+            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+        <copy includeemptydirs="false" todir="build">
+            <fileset dir="images" excludes="**/*.launch, **/*.java"/>
+        </copy>
+        <copy includeemptydirs="false" todir="build">
+            <fileset dir="resources" excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="build"/>
+        <delete file="package/pos.jar"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-project" name="build"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="pos.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build" source="${source}" target="${target}">
+            <src path="images"/>
+            <classpath refid="pos.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build" source="${source}" target="${target}">
+            <src path="resources"/>
+            <classpath refid="pos.classpath"/>
+        </javac>
+    </target>
+    <target name="jar" depends="build">
+      <delete file="package/pos.jar"/>
+
+      <jar destfile="package/pos.jar">
+        <manifest>
+             <attribute name="Built-By" value="${user.name}"/>
+             <attribute name="Main-Class" value="org.pos.ui.DriverGUI"/>
+             <attribute name="Class-Path" value="."/>
+         </manifest>
+         <fileset dir="build"/>
+         <zipfileset excludes="META-INF/*.SF" src="lib/mysql-connector-java-5.1.14-bin.jar"/>
+         <zipfileset excludes="META-INF/*.SF" src="lib/log4j-1.2.15.jar"/>
+      </jar>
+
+    </target>
+    <target name="test" description="Runs JUnit Tests" depends="build">
+      <echo>=== Running JUnit Tests ===</echo>
+
+      <junit printsummary="yes" fork="yes" haltonfailure="yes" showoutput="yes" failureproperty="junit.failure">
+        <classpath refid="pos.classpath" />
+        <batchTest todir="build">
+          <fileset dir="build">
+            <include name="**/*Test.class" />
+          </fileset>
+        </batchTest>
+      </junit>
+    </target>
+</project>

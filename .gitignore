@@ -1,0 +1,9 @@
+*.log
+CVS
+*.tmproj
+build
+package
+MANIFEST.MF
+.DS_Store
+out/
+.idea
