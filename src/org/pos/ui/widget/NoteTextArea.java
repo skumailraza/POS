@@ -1,13 +1,4 @@
 package org.pos.ui.widget;
-/*
- * Created on Aug 3, 2005
- *
- */
-
-/**
- * @author tom
- *
- */
 
 import java.util.*;
 import java.awt.*;
